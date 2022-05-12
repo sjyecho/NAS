@@ -3,41 +3,22 @@ package com.example.app1;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.OrientationEventListener;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
+public class MainActivity2 extends AppCompatActivity {
 
-    private static final String TAG = "aaa";
-
-    //定义系统的Sensor管理器
-    SensorManager sensorManager;
     EditText editText;
     ImageView imageView;
-    int x, y, z;
-
-    boolean isA = true;
-    boolean isB = true;
-    boolean isC = true;
-    boolean isD = true;
-
-    /*
-        这两个变量用于确定手机当前处于哪个转向
-     */
-    int locationX = 0;
-    int locationY = 9;
-
-    ObjectAnimator animator = new ObjectAnimator();
+    int durationTime = 250;//旋转动画持续时间
+    float startRotation = 0f;//旋转开始角度
+    float rotation = 0f;//旋转结束角度
+    boolean isAnimate = false;//标志位，用于控制动画不会反复执行
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,336 +26,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         setContentView(R.layout.activity_main2);
         editText = findViewById(R.id.edittext);
         imageView = findViewById(R.id.image);
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         new MyOrientoinListener(this, SensorManager.SENSOR_DELAY_FASTEST).enable();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //为系统的加速度传感器注册监听
-//        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
-
-    }
-
-    @Override
-    protected void onStop() {
-        //取消注册
-//        sensorManager.unregisterListener(this);
-        super.onStop();
-    }
-
-    //当传感器的值发生改变时回调该方法
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-        int angle = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
-        Log.d("==============", "angle = " + angle);
-
-        float[] values = event.values;
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("X方向上的加速度：");
-        sb.append(values[0]);
-
-        sb.append("\nY方向上的加速度：");
-        sb.append(values[1]);
-
-        sb.append("\nZ方向上的加速度：");
-        sb.append(values[2]);
-
-        editText.setText(sb.toString());
-
-        x = (int) values[0];
-        y = (int) values[1];
-        z = (int) values[2];
-
-        /*
-            记录手机当前处于哪个转向
-         */
-        if (x == 9) {//左
-            locationX = x;
-        } else if (y == 9) {//正
-            locationY = y;
-        } else if (y == -9) {//倒
-            locationY = y;
-        } else if (x == -9) {//右
-            locationX = x;
-        }
-        // x:9 左  y:9 正   x:-9 右  y:-9 倒
-//        locationX = (x == 9 || x == -9) ? x : locationX;
-//        locationY = (y == 9 || y == -9) ? x : locationY;
-
-
-        if (locationY == 9) {//此时是正方向
-            if (x == 9 && isA) {//向左
-                isA = false;
-                isB = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 90f);
-                animator.setDuration(500);
-                animator.start();
-
-                animator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        Log.d("==============", "onAnimationStart = ");
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        Log.d("==============", "onAnimationEnd = ");
-
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-
-                locationX = 9;
-                locationY = 0;
-            } /*else if (y == 9 && isB) {//转正
-                isB = false;
-                isA = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 90f, 0f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = 9;
-                Log.d(TAG, "onSensorChanged: y == 9 && isB 条件下，locationY 的值: " + locationY);
-                Toast.makeText(this, "逆时针--90°--转正", Toast.LENGTH_SHORT).show();
-            } */
-            if (y == -9 && isC) {//倒过来
-                isC = false;
-                isB = true;
-                isA = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 180f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = -9;
-                locationX = 0;
-            }
-            if (x == -9 && isD) {//向右
-                isD = false;
-                isB = true;
-                isA = true;
-                isC = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, -90f);
-                animator.setDuration(500);
-                animator.start();
-                locationX = -9;
-                locationY = 0;
-            }
-        }
-
-        if (locationX == -9) {//此时处于右方向
-            if (x == 9 && isA) {//右方向 -> 左方向
-                isA = false;
-                isB = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", -90f, 90f);
-                animator.setDuration(500);
-                animator.start();
-                locationX = 9;
-                locationY = 0;
-            }
-            if (y == 9 && isB) {//转正
-                isB = false;
-                isA = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", -90f, 0f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = 9;
-                locationX = 0;
-            }
-            if (y == -9 && isC) {//右方向->倒方向
-                isC = false;
-                isB = true;
-                isA = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", -90f, -180f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = -9;
-                locationX = 0;
-            }
-            /*if (x == -9 && isD) {//向右
-                isD = false;
-                isB = true;
-                isA = true;
-                isC = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, -90f);
-                animator.setDuration(500);
-                animator.start();
-                locationX = -9;
-                locationY = 0;
-//                Log.d(TAG, "onSensorChanged: x == -9 && isD 条件下，locationX 的值: " + locationX);
-//                Toast.makeText(this, "顺时针---90°", Toast.LENGTH_SHORT).show();
-            }*/
-        }
-
-        if (locationX == 9) {//此时处于左方向
-            /*if (x == 9 && isA) {//向左
-                isA = false;
-                isB = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 90f);
-                animator.setDuration(500);
-                animator.start();
-                locationX = 9;
-                Log.d(TAG, "onSensorChanged: x == 9 && isA 条件下，locationX 的值: " + locationX);
-                Toast.makeText(this, "逆时针--90°", Toast.LENGTH_SHORT).show();
-            }*/
-            if (y == 9 && isB) {//转正
-                isB = false;
-                isA = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 90f, 0f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = 9;
-                locationX = 0;
-            }
-            if (y == -9 && isC) {//左方向->倒方向
-                isC = false;
-                isB = true;
-                isA = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 90f, 180f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = -9;
-                locationX = 0;
-            }
-            if (x == -9 && isD) {//从左方向到右方向
-                isD = false;
-                isB = true;
-                isA = true;
-                isC = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, -90f);
-                animator.setDuration(500);
-                animator.start();
-                locationX = -9;
-                locationY = 0;
-            }
-        }
-
-        if (locationY == -9) {//此时处于倒方向
-            if (x == 9 && isA) {//从倒方向到左方向
-                isA = false;
-                isB = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 180f, 90f);
-                animator.setDuration(500);
-                animator.start();
-                locationX = 9;
-            }
-            if (y == 9 && isB) {//转正
-                isB = false;
-                isA = true;
-                isC = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 90f, 0f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = 9;
-                locationX = 0;
-            }
-            /*if (y == -9 && isC) {//倒过来
-                isC = false;
-                isB = true;
-                isA = true;
-                isD = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 180f);
-                animator.setDuration(500);
-                animator.start();
-                locationY = -9;
-                locationX = 0;
-//                Log.d(TAG, "onSensorChanged: y == -9 && isC 条件下，locationY 的值: " + locationY);
-//                Toast.makeText(this, "3333333333333333333333", Toast.LENGTH_SHORT).show();
-            }*/
-            if (x == -9 && isD) {//从倒方向到右方向
-                isD = false;
-                isB = true;
-                isA = true;
-                isC = true;
-                animator = ObjectAnimator.ofFloat(imageView, "rotation", -180f, -90f);
-                animator.setDuration(500);
-                animator.start();
-                locationX = -9;
-                locationY = 0;
-            }
-        }
-
-//        if (x == 9 && isA) {
-//            isA = false;
-//            isB = true;
-//            isC = true;
-//            isD = true;
-//            animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 90f);
-//            animator.setDuration(500);
-//            animator.start();
-//            locationX = 9;
-//            Log.d(TAG, "onSensorChanged: x == 9 && isA 条件下，locationX 的值: " + locationX);
-//            Toast.makeText(this, "逆时针--90°", Toast.LENGTH_SHORT).show();
-//        } else if (y == 9 && isB) {
-//            isB = false;
-//            isA = true;
-//            isC = true;
-//            isD = true;
-//            animator = ObjectAnimator.ofFloat(imageView, "rotation", 90f, 0f);
-//            animator.setDuration(500);
-//            animator.start();
-//            locationY = 9;
-//            Log.d(TAG, "onSensorChanged: y == 9 && isB 条件下，locationY 的值: " + locationY);
-//            Toast.makeText(this, "逆时针--90°--转正", Toast.LENGTH_SHORT).show();
-//        } else if (y == -9 && isC) {
-//            isC = false;
-//            isB = true;
-//            isA = true;
-//            isD = true;
-//            animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 180f);
-//            animator.setDuration(500);
-//            animator.start();
-//            locationY = -9;
-//            Log.d(TAG, "onSensorChanged: y == -9 && isC 条件下，locationY 的值: " + locationY);
-//            Toast.makeText(this, "3333333333333333333333", Toast.LENGTH_SHORT).show();
-//        } else if (x == -9 && isD) {
-//            isD = false;
-//            isB = true;
-//            isA = true;
-//            isC = true;
-//            animator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, -90f);
-//            animator.setDuration(500);
-//            animator.start();
-//            locationX = -9;
-//            Log.d(TAG, "onSensorChanged: x == -9 && isD 条件下，locationX 的值: " + locationX);
-//            Toast.makeText(this, "顺时针---90°", Toast.LENGTH_SHORT).show();
-//        }
-    }
-
-    //传感器精度改变时回调该方法
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     class MyOrientoinListener extends OrientationEventListener {
@@ -385,25 +37,84 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
 
         @Override
         public void onOrientationChanged(int orientation) {
+
+            //Log.d(TAG, "orientation：" + orientation );
+
             if (orientation > 340 || orientation < 20) {//正向
                 editText.setText("当前设备方向为: 正向");
-                imageView.setRotation(0);
+                rotation = 0f;
+                startAnimator();
             }
 
             if (orientation > 70 && orientation < 110) {//右向
                 editText.setText("当前设备方向为: 右向");
-                imageView.setRotation(270);
+                rotation = 270f;
+                startAnimator();
             }
 
             if (orientation > 250 && orientation < 290) {//左向
                 editText.setText("当前设备方向为: 左向");
-                imageView.setRotation(90);
+                rotation = 90f;
+                startAnimator();
             }
 
             if (orientation > 160 && orientation < 200) {//倒向
                 editText.setText("当前设备方向为: 倒向");
-                imageView.setRotation(180);
+                rotation = 180f;
+                startAnimator();
             }
         }
     }
+
+    private void startAnimator(){
+        if (!isAnimate && startRotation != rotation){
+
+            if (startRotation == 90f && rotation == 360f){
+                rotation =0f;
+            }
+            if (startRotation == 270f && rotation == 0f){
+                rotation = 360f;
+            }
+
+            if (startRotation == 360f && rotation == 90f){
+                startRotation = 0f;
+            }
+
+            if (startRotation == 0f && rotation == 270f){
+                startRotation=360f;
+            }
+            ObjectAnimator animator = ObjectAnimator.ofFloat(
+                    imageView,
+                    "rotation",
+                    startRotation,
+                    rotation);
+            animator.addListener(animatorListener);
+            animator.setDuration(durationTime);
+            animator.start();
+        }
+    }
+
+    private Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            isAnimate = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            startRotation = rotation;
+            //lastRotation = rotation;
+            isAnimate = false;
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            isAnimate = false;
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+            isAnimate = true;
+        }
+    };
 }
