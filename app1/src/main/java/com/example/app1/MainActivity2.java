@@ -26,18 +26,17 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         editText = findViewById(R.id.edittext);
         imageView = findViewById(R.id.image);
-        new MyOrientoinListener(this, SensorManager.SENSOR_DELAY_FASTEST).enable();
+        new MyOrientionListener(this, SensorManager.SENSOR_DELAY_FASTEST).enable();
     }
 
-    class MyOrientoinListener extends OrientationEventListener {
+    class MyOrientionListener extends OrientationEventListener {
 
-        public MyOrientoinListener(Context context, int rate) {
+        public MyOrientionListener(Context context, int rate) {
             super(context, rate);
         }
 
         @Override
         public void onOrientationChanged(int orientation) {
-
             //Log.d(TAG, "orientation：" + orientation );
 
             if (orientation > 340 || orientation < 20) {//正向
@@ -94,7 +93,7 @@ public class MainActivity2 extends AppCompatActivity {
         }
     }
 
-    private Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
+    private final Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animation) {
             isAnimate = true;
@@ -103,7 +102,6 @@ public class MainActivity2 extends AppCompatActivity {
         @Override
         public void onAnimationEnd(Animator animation) {
             startRotation = rotation;
-            //lastRotation = rotation;
             isAnimate = false;
         }
 
