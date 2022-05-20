@@ -10,12 +10,14 @@ import com.example.app4.BR;
 import com.example.app4.R;
 import com.example.app4.callback.CallBack;
 import com.example.app4.databinding.ActivityMainBinding;
-import com.example.app4.entity.Account;
+import com.example.app4.domain.Account;
 import com.example.app4.model.MvvmModel;
 
 public class ViewModel extends BaseObservable {
     private final MvvmModel mvvmModel;
     private String result;
+    ActivityMainBinding binding;
+    Application application;
 
     @Bindable
     public String getResult() {
@@ -26,9 +28,6 @@ public class ViewModel extends BaseObservable {
         this.result = result;
         notifyPropertyChanged(BR.result);
     }
-
-    ActivityMainBinding binding;
-    Application application;
 
     public ViewModel( Application application,ActivityMainBinding binding) {
         mvvmModel=new MvvmModel();

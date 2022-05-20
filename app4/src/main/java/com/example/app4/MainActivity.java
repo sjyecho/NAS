@@ -9,6 +9,7 @@ import com.example.app4.databinding.ActivityMainBinding;
 import com.example.app4.view.ViewModel;
 
 public class MainActivity extends AppCompatActivity {
+
     ActivityMainBinding binding;
 
     @Override

@@ -1,10 +1,7 @@
 package com.example.app3;
 
-import android.util.Log;
-
+import androidx.annotation.NonNull;
 import com.example.app3.bean.Repo;
-
-import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -15,6 +12,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
+/**
+ * Retrofit网络请求框架案例
+ */
 public class Demo01 {
 
     public static void main(String[] args) {
@@ -25,7 +25,7 @@ public class Demo01 {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))//这条转换语句需要依赖才能执行
+                .addConverterFactory(GsonConverterFactory.create())//这条转换语句需要依赖才能执行
                 .client(okHttpClient)
                 .build();
 
@@ -37,18 +37,28 @@ public class Demo01 {
          */
         Call<Repo> repos = service.listRepos("sjyecho");
 
+        //异步请求
         repos.enqueue(new Callback<Repo>() {
             @Override
-            public void onResponse(Call<Repo> call, Response<Repo> response) {
+            public void onResponse(@NonNull Call<Repo> call, @NonNull Response<Repo> response) {
                 Repo data = response.body();
                 System.out.println(data);
             }
 
             @Override
-            public void onFailure(Call<Repo> call, Throwable t) {
+            public void onFailure(@NonNull Call<Repo> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
+
+        //同步请求
+//        try {
+//            Response<Repo> execute = repos.execute();
+//            String s = execute.body().toString();
+//            System.out.println(s);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     interface GithubService {

@@ -1,7 +1,7 @@
 package com.example.app4.model;
 
 import com.example.app4.callback.CallBack;
-import com.example.app4.entity.Account;
+import com.example.app4.domain.Account;
 
 import java.util.Random;
 

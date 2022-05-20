@@ -29,11 +29,11 @@ android {
 
 dependencies {
 
-    implementation ('com.squareup.retrofit2:converter-gson:2.0.2')//将获取到的Json字符串转换为JavaBean对象所需的依赖
+    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'//将获取到的Json字符串转换为JavaBean对象所需的依赖
 
-    implementation('com.fasterxml.jackson.core:jackson-core:2.11.1')
-    implementation('com.fasterxml.jackson.core:jackson-annotations:2.11.1')
-    implementation('com.fasterxml.jackson.core:jackson-databind:2.11.1')
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'//Retrofit网络请求框架
 

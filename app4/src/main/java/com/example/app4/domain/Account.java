@@ -1,4 +1,4 @@
-package com.example.app4.entity;
+package com.example.app4.domain;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
@@ -18,7 +18,7 @@ public class Account extends BaseObservable {
         this.name = name;
     }
 
-    @Bindable
+    @Bindable//用于数据更新自动刷新视图. 自动生成BR的ID
     public int getLevel() {
         return level;
     }

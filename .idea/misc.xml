@@ -9,7 +9,15 @@
         <entry key="app1/src/main/res/layout/activity_main1.xml" value="0.35104166666666664" />
         <entry key="app1/src/main/res/layout/activity_main2.xml" value="0.35104166666666664" />
         <entry key="app2/src/main/res/layout/activity_main.xml" value="0.35104166666666664" />
+        <entry key="app3/src/main/res/layout/activity_main.xml" value="0.28804347826086957" />
         <entry key="app4/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app4/src/main/res/layout/activity_main2.xml" value="0.3283514492753623" />
+        <entry key="app4/src/main/res/layout/mvvm2.xml" value="0.3283514492753623" />
+        <entry key="app5/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app5/src/main/res/layout/bottom_dialog.xml" value="0.33" />
+        <entry key="app5/src/main/res/layout/custom_dialog.xml" value="0.33" />
+        <entry key="app5/src/main/res/layout/dialog_pictures_menu.xml" value="0.1" />
+        <entry key="app5/src/main/res/layout/top_dialog.xml" value="0.5" />
       </map>
     </option>
   </component>
